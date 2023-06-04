@@ -30,10 +30,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	s.Start(BindRoutes)
+	s.Start(BindRoutesHome)
 
 }
 
-func BindRoutes(s server.Server, r *gin.Engine) {
-	r.GET("/", handlers.GetAlbums)
+func BindRoutesHome(s server.Server, r *gin.Engine) {
+	r.GET("/", handlers.HomeHandler)
+	r.GET("/hello", handlers.HelloHandler)
 }
