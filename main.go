@@ -7,6 +7,7 @@ import (
 
 	"baptiste.com/handlers"
 	"baptiste.com/server"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -19,11 +20,11 @@ func main() {
 	}
 
 	PORT := os.Getenv("PORT")
-	DATABASE_URL := os.Getenv("DATABASE_URL")
+	PROJECT_ID := os.Getenv("PROJECT_ID")
 
 	s, err := server.NewServer(context.Background(), &server.Config{
-		Port:        PORT,
-		DatabaseUrl: DATABASE_URL,
+		Port:      PORT,
+		ProjectID: PROJECT_ID,
 	})
 
 	if err != nil {
@@ -31,10 +32,10 @@ func main() {
 	}
 
 	s.Start(BindRoutesHome)
-
 }
 
 func BindRoutesHome(s server.Server, r *gin.Engine) {
 	r.GET("/", handlers.HomeHandler)
 	r.GET("/hello", handlers.HelloHandler)
+	r.GET("/monthly-expenses", handlers.GetMonthlyExpensesByIDHandler)
 }

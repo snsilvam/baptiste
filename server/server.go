@@ -6,12 +6,14 @@ import (
 	"log"
 	"net/http"
 
+	"baptiste.com/database"
+	"baptiste.com/repository"
 	"github.com/gin-gonic/gin"
 )
 
 type Config struct {
-	Port        string
-	DatabaseUrl string
+	Port      string
+	ProjectID string
 }
 
 type Server interface {
@@ -20,7 +22,7 @@ type Server interface {
 
 type Broker struct {
 	config *Config
-	//tipo ruta o rutas?
+
 	router *gin.Engine
 }
 
@@ -33,13 +35,13 @@ func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 		return nil, errors.New("port is required")
 	}
 
-	if config.DatabaseUrl == "" {
-		return nil, errors.New("url of  database is requiered")
+	if config.ProjectID == "" {
+		return nil, errors.New("projectID of  database is required")
 	}
 
 	broker := &Broker{
 		config: config,
-		//crea una nueva ruta?
+		//create a new routeador
 		router: gin.New(),
 	}
 
@@ -47,9 +49,21 @@ func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 }
 
 func (b *Broker) Start(binder func(s Server, r *gin.Engine)) {
+	ctx := context.Background()
+	repo, err := database.NewClientFirestore(ctx, b.config.ProjectID)
+
+	if err != nil {
+		log.Fatal("error creating a new client of firestore: ", err)
+	}
+
+	repository.SetRepository(repo)
+
 	b.router = gin.New()
+
 	binder(b, b.router)
+
 	log.Println("Starting server on port", b.Config().Port)
+
 	if err := http.ListenAndServe(b.config.Port, b.router); err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}

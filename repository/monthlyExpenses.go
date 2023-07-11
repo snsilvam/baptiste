@@ -6,14 +6,14 @@ import (
 	"baptiste.com/models"
 )
 
-type MonthlyExpenses interface {
+type MonthlyExpensesRepository interface {
 	InsertMonthlyExpenses(ctx context.Context, monthlyExpenses *models.MonthlyExpensesModel) error
 	GetMonthlyExpense(ctx context.Context, id string) (*models.MonthlyExpensesModel, error)
 }
 
-var implementation MonthlyExpenses
+var implementation MonthlyExpensesRepository
 
-func SetRepository(repository MonthlyExpenses) {
+func SetRepository(repository MonthlyExpensesRepository) {
 	implementation = repository
 }
 
