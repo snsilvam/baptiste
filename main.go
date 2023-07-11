@@ -37,5 +37,7 @@ func main() {
 func BindRoutesHome(s server.Server, r *gin.Engine) {
 	r.GET("/", handlers.HomeHandler)
 	r.GET("/hello", handlers.HelloHandler)
-	r.GET("/monthly-expenses", handlers.GetMonthlyExpensesByIDHandler)
+	r.GET("/monthly-expenses/:id", handlers.GetMonthlyExpensesByIDHandler)
+	//test
+	r.GET("/insert", handlers.PostMonthlyExpensesHandler)
 }

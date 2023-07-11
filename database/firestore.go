@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 
 	"baptiste.com/models"
 	"cloud.google.com/go/firestore"
@@ -25,7 +26,7 @@ func (f *FirestoreRepository) InsertMonthlyExpenses(ctx context.Context, monthly
 	ny := f.client.Doc("monthlyExpensesModel")
 
 	_, err := ny.Create(ctx, monthlyExpenses)
-
+	fmt.Println("error--->", err)
 	if err != nil {
 		return err
 	}
