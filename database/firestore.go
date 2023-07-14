@@ -54,3 +54,13 @@ func (f *FirestoreRepository) GetMonthlyExpense(ctx context.Context, id string) 
 
 	return &monthlyExpensesModel, nil
 }
+
+func (f *FirestoreRepository) UpdateMonthlyExpense(ctx context.Context, monthlyExpense *models.MonthlyExpensesModelUpdate) error {
+	doc := f.client.Doc("monthlyExpensesModel/" + monthlyExpense.ID)
+
+	_, err := doc.Update(ctx, []firestore.Update{{Path: "NameFixedExpense", Value: monthlyExpense.NameFixedExpense}, {Path: "DueDate", Value: monthlyExpense.DueDate}, {Path: "Status", Value: monthlyExpense.Status}})
+	if err != nil {
+		return err
+	}
+	return nil
+}

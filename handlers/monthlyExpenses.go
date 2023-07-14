@@ -9,11 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Response struct {
-	Message string `json:"message"`
-	Status  bool   `json:"status"`
-}
-
 type MessageError struct {
 	Message string `json:"message"`
 	Url     string `json:"url"`
@@ -24,7 +19,7 @@ func GetMonthlyExpensesByIDHandler(c *gin.Context) {
 	monthlyExpense, err := repository.GetMonthlyExpense(c, idDoc)
 
 	if err != nil {
-		c.JSON(404, MessageError{
+		c.JSON(500, MessageError{
 			Message: err.Error(),
 			Url:     "/monthly-expenses/:id",
 		})
@@ -38,15 +33,45 @@ func PostMonthlyExpensesHandler(c *gin.Context) {
 	var object models.MonthlyExpensesModelInsert
 	if err := c.BindJSON(&object); err != nil {
 		fmt.Println("error al recibir el objeto en el request", err)
+		c.JSON(404, MessageError{
+			Message: err.Error(),
+			Url:     "/monthly-expenses",
+		})
 		return
 	}
 
 	fmt.Println("este fue el objeto enviado en el body", object)
 	err := repository.InsertMonthlyExpenses(c, &object)
 	if err != nil {
-		c.JSON(500, gin.H{"msg": err})
+		c.JSON(500, MessageError{
+			Message: err.Error(),
+			Url:     "/monthly-expenses",
+		})
 		return
 	}
 
 	c.IndentedJSON(http.StatusOK, "Monthly Expense creado con exito.")
+}
+
+func PatchMonthlyExpenseHandler(c *gin.Context) {
+	var object models.MonthlyExpensesModelUpdate
+	if err := c.BindJSON(&object); err != nil {
+		fmt.Println("error al recibir el objeto en el request", err)
+		c.JSON(404, MessageError{
+			Message: err.Error(),
+			Url:     "/monthly-expenses",
+		})
+		return
+	}
+
+	fmt.Println("este fue el objeto enviado en el request", object)
+	if err := repository.UpdateMonthlyExpense(c, &object); err != nil {
+		c.JSON(500, MessageError{
+			Message: err.Error(),
+			Url:     "/monthly-expenses",
+		})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, "Monthly Expense actualizado con exito.")
 }

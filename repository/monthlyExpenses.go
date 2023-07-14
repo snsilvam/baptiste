@@ -9,6 +9,7 @@ import (
 type MonthlyExpensesRepository interface {
 	InsertMonthlyExpenses(ctx context.Context, monthlyExpenses *models.MonthlyExpensesModelInsert) error
 	GetMonthlyExpense(ctx context.Context, id string) (*models.MonthlyExpensesModel, error)
+	UpdateMonthlyExpense(ctx context.Context, monthlyExpense *models.MonthlyExpensesModelUpdate) error
 }
 
 var implementation MonthlyExpensesRepository
@@ -23,4 +24,8 @@ func InsertMonthlyExpenses(ctx context.Context, monthlyExpenses *models.MonthlyE
 
 func GetMonthlyExpense(ctx context.Context, id string) (*models.MonthlyExpensesModel, error) {
 	return implementation.GetMonthlyExpense(ctx, id)
+}
+
+func UpdateMonthlyExpense(ctx context.Context, monthlyExpense *models.MonthlyExpensesModelUpdate) error {
+	return implementation.UpdateMonthlyExpense(ctx, monthlyExpense)
 }

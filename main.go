@@ -39,4 +39,5 @@ func BindRoutesHome(s server.Server, r *gin.Engine) {
 	r.GET("/hello", handlers.HelloHandler)
 	r.GET("/monthly-expenses/:id", handlers.GetMonthlyExpensesByIDHandler)
 	r.POST("/monthly-expenses", handlers.PostMonthlyExpensesHandler)
+	r.PATCH("/monthly-expenses", handlers.PatchMonthlyExpenseHandler)
 }
