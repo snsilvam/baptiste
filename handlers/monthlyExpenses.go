@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"baptiste.com/models"
@@ -34,15 +35,18 @@ func GetMonthlyExpensesByIDHandler(c *gin.Context) {
 }
 
 func PostMonthlyExpensesHandler(c *gin.Context) {
-	object := &models.MonthlyExpensesModel{
-		NameFixedExpense: "internet",
-		DueDate:          "15 de cada mes",
+	var object models.MonthlyExpensesModelInsert
+	if err := c.BindJSON(&object); err != nil {
+		fmt.Println("error al recibir el objeto en el request", err)
+		return
 	}
 
-	err := repository.InsertMonthlyExpenses(c, object)
+	fmt.Println("este fue el objeto enviado en el body", object)
+	err := repository.InsertMonthlyExpenses(c, &object)
 	if err != nil {
-		c.JSON(400, gin.H{"msg": err})
+		c.JSON(500, gin.H{"msg": err})
+		return
 	}
 
-	c.IndentedJSON(http.StatusOK, "goood")
+	c.IndentedJSON(http.StatusOK, "Monthly Expense creado con exito.")
 }

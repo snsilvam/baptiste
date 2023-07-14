@@ -7,7 +7,7 @@ import (
 )
 
 type MonthlyExpensesRepository interface {
-	InsertMonthlyExpenses(ctx context.Context, monthlyExpenses *models.MonthlyExpensesModel) error
+	InsertMonthlyExpenses(ctx context.Context, monthlyExpenses *models.MonthlyExpensesModelInsert) error
 	GetMonthlyExpense(ctx context.Context, id string) (*models.MonthlyExpensesModel, error)
 }
 
@@ -17,7 +17,7 @@ func SetRepository(repository MonthlyExpensesRepository) {
 	implementation = repository
 }
 
-func InsertMonthlyExpenses(ctx context.Context, monthlyExpenses *models.MonthlyExpensesModel) error {
+func InsertMonthlyExpenses(ctx context.Context, monthlyExpenses *models.MonthlyExpensesModelInsert) error {
 	return implementation.InsertMonthlyExpenses(ctx, monthlyExpenses)
 }
 

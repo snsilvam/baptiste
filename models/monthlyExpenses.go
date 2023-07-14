@@ -7,3 +7,10 @@ type MonthlyExpensesModel struct {
 	//Fecha de pago del gasto fijo mensual.
 	DueDate string `json:"dueDate"`
 }
+
+type MonthlyExpensesModelInsert struct {
+	//Nombre del gasto fijo mensual.
+	NameFixedExpense string `json:"nameFixedExpense"`
+	//Fecha de pago del gasto fijo mensual.
+	DueDate string `json:"dueDate"`
+}

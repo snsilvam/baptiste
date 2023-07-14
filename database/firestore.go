@@ -22,14 +22,16 @@ func NewClientFirestore(ctx context.Context, projectID string) (*FirestoreReposi
 	return &FirestoreRepository{client}, nil
 }
 
-func (f *FirestoreRepository) InsertMonthlyExpenses(ctx context.Context, monthlyExpenses *models.MonthlyExpensesModel) error {
-	ny := f.client.Doc("monthlyExpensesModel")
+func (f *FirestoreRepository) InsertMonthlyExpenses(ctx context.Context, monthlyExpenses *models.MonthlyExpensesModelInsert) error {
+	collectionMonthlyExpenses := f.client.Collection("monthlyExpensesModel")
 
-	_, err := ny.Create(ctx, monthlyExpenses)
-	fmt.Println("error--->", err)
+	wr, err := collectionMonthlyExpenses.NewDoc().Create(ctx, monthlyExpenses)
 	if err != nil {
+		fmt.Println("error al intentar crear el documento en firestore:", err)
 		return err
 	}
+
+	fmt.Println("El documento se creo con exito ☻", wr)
 
 	return nil
 }
