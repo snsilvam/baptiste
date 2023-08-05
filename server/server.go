@@ -57,6 +57,7 @@ func (b *Broker) Start(binder func(s Server, r *gin.Engine)) {
 	}
 
 	repository.SetRepository(repo)
+	repository.SetUsersRepository(repo)
 
 	b.router = gin.New()
 

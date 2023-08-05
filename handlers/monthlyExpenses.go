@@ -41,6 +41,7 @@ func PostMonthlyFixedExpensesHandler(c *gin.Context) {
 	}
 
 	fmt.Println("este fue el objeto enviado en el body", object)
+
 	err := repository.InsertMonthlyExpenses(c, &object)
 	if err != nil {
 		c.JSON(500, MessageError{
