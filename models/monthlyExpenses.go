@@ -1,6 +1,6 @@
 package models
 
-type MonthlyExpensesModel struct {
+type MonthlyFixedExpensesModel struct {
 	ID string `json:"id"`
 	//Nombre del gasto fijo mensual.
 	NameFixedExpense string `json:"nameFixedExpense"`
@@ -8,7 +8,7 @@ type MonthlyExpensesModel struct {
 	DueDate string `json:"dueDate"`
 }
 
-type MonthlyExpensesModelInsert struct {
+type MonthlyFixedExpensesModelInsert struct {
 	//Nombre del gasto fijo mensual.
 	NameFixedExpense string `json:"nameFixedExpense"`
 	//Fecha de pago del gasto fijo mensual.
@@ -17,7 +17,7 @@ type MonthlyExpensesModelInsert struct {
 	Status string `json:"status"`
 }
 
-type MonthlyExpensesModelUpdate struct {
+type MonthlyFixedExpensesModelUpdate struct {
 	ID string `json:"id"`
 	//Nombre del gasto fijo mensual.
 	NameFixedExpense *string `json:"nameFixedExpense"`

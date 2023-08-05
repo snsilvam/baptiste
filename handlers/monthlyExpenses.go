@@ -14,7 +14,7 @@ type MessageError struct {
 	Url     string `json:"url"`
 }
 
-func GetMonthlyExpensesByIDHandler(c *gin.Context) {
+func GetMonthlyFixedExpensesByIDHandler(c *gin.Context) {
 	idDoc := c.Param("id")
 	monthlyExpense, err := repository.GetMonthlyExpense(c, idDoc)
 
@@ -29,8 +29,8 @@ func GetMonthlyExpensesByIDHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, monthlyExpense)
 }
 
-func PostMonthlyExpensesHandler(c *gin.Context) {
-	var object models.MonthlyExpensesModelInsert
+func PostMonthlyFixedExpensesHandler(c *gin.Context) {
+	var object models.MonthlyFixedExpensesModelInsert
 	if err := c.BindJSON(&object); err != nil {
 		fmt.Println("error al recibir el objeto en el request", err)
 		c.JSON(404, MessageError{
@@ -54,7 +54,7 @@ func PostMonthlyExpensesHandler(c *gin.Context) {
 }
 
 func PatchMonthlyExpenseHandler(c *gin.Context) {
-	var object models.MonthlyExpensesModelUpdate
+	var object models.MonthlyFixedExpensesModelUpdate
 	if err := c.BindJSON(&object); err != nil {
 		fmt.Println("error al recibir el objeto en el request", err)
 		c.JSON(404, MessageError{
