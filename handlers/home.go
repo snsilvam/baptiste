@@ -11,6 +11,11 @@ type HomeResponse struct {
 	Status  bool   `json:"status"`
 }
 
+type MessageError struct {
+	Message string `json:"message"`
+	Url     string `json:"url"`
+}
+
 func HomeHandler(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, HomeResponse{
 		Message: "Welcome to Baptiste API REST☻.",

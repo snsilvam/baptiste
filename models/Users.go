@@ -13,7 +13,7 @@ type Users struct {
 	Name string `json:"name"`
 	//Email del usuario
 	Email string `json:"email"`
-	//Estado del usuario en la plataforma, si es falso, quiere decir que el usuario esta eliminado o desactivado.
+	//Estado del usuario en la plataforma, si es falso, quiere decir que esta eliminado o desactivado.
 	Status bool `json:"status"`
 }
 
@@ -26,6 +26,6 @@ type UserInsert struct {
 	Name string `json:"name"`
 	//Email del usuario
 	Email string `json:"email"`
-	//Estado del usuario en la plataforma, si es falso, quiere decir que el usuario esta eliminado o desactivado.
+	//Estado del usuario en la plataforma, si es falso, quiere decir que esta eliminado o desactivado.
 	Status bool `json:"status"`
 }

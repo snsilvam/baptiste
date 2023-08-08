@@ -15,6 +15,7 @@ func (f *FirestoreRepository) InsertUser(ctx context.Context, user *models.UserI
 
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = user.CreatedAt
+	user.Status = true
 
 	wr, err := usersCollection.NewDoc().Create(ctx, user)
 	if err != nil {
@@ -22,7 +23,7 @@ func (f *FirestoreRepository) InsertUser(ctx context.Context, user *models.UserI
 		return err
 	}
 
-	fmt.Println("El documento se creo con exito ☻", wr)
+	fmt.Println("El documento(User) se creo con exito ☻", wr)
 
 	return nil
 }

@@ -9,67 +9,78 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type MessageError struct {
-	Message string `json:"message"`
-	Url     string `json:"url"`
+func PostMonthlyFixedExpense(c *gin.Context) {
+	var monthlyFixedExpensesInsert models.MonthlyFixedExpensesInsert
+
+	if err := c.BindJSON(&monthlyFixedExpensesInsert); err != nil {
+		fmt.Println("error al recibir el objeto(MonthlyFixedExpensesInsert) en el request", err)
+
+		c.JSON(404, MessageError{
+			Message: err.Error(),
+			Url:     "/monthly-fixed-expenses",
+		})
+		return
+	}
+
+	fmt.Println("este fue el objeto(monthlyFixedExpensesInsert) enviado en el body", monthlyFixedExpensesInsert)
+
+	err := repository.InsertMonthlyFixedExpense(c, &monthlyFixedExpensesInsert)
+	if err != nil {
+		c.JSON(500, MessageError{
+			Message: err.Error(),
+			Url:     "/monthly-expenses",
+		})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, "Monthly Fixed Expense creado con exito.")
 }
 
-func GetMonthlyFixedExpensesByIDHandler(c *gin.Context) {
+func GetMonthlyFixedExpense(c *gin.Context) {
 	idDoc := c.Param("id")
-	monthlyExpense, err := repository.GetMonthlyExpense(c, idDoc)
+	monthlyFixedExpense, err := repository.GetMonthlyFixedExpense(c, idDoc)
 
 	if err != nil {
 		c.JSON(500, MessageError{
 			Message: err.Error(),
-			Url:     "/monthly-expenses/:id",
+			Url:     "/monthly-fixed-expenses/" + idDoc,
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, monthlyExpense)
+	c.JSON(http.StatusOK, monthlyFixedExpense)
 }
 
-func PostMonthlyFixedExpensesHandler(c *gin.Context) {
-	var object models.MonthlyFixedExpensesModelInsert
-	if err := c.BindJSON(&object); err != nil {
-		fmt.Println("error al recibir el objeto en el request", err)
-		c.JSON(404, MessageError{
-			Message: err.Error(),
-			Url:     "/monthly-expenses",
-		})
-		return
-	}
-
-	fmt.Println("este fue el objeto enviado en el body", object)
-
-	err := repository.InsertMonthlyExpenses(c, &object)
+func GetAllMonthlyFixedExpenses(c *gin.Context) {
+	monthlyFixedExpenses, err := repository.GetAllMonthlyFixedExpenses(c)
 	if err != nil {
 		c.JSON(500, MessageError{
 			Message: err.Error(),
-			Url:     "/monthly-expenses",
+			Url:     "/monthly-fixed-expenses/",
 		})
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, "Monthly Expense creado con exito.")
+	c.JSON(http.StatusOK, monthlyFixedExpenses)
 }
 
-func PatchMonthlyExpenseHandler(c *gin.Context) {
-	var object models.MonthlyFixedExpensesModelUpdate
-	if err := c.BindJSON(&object); err != nil {
-		fmt.Println("error al recibir el objeto en el request", err)
+func UpdateMonthlyFixedExpense(c *gin.Context) {
+	var monthlyFixedExpense models.MonthlyFixedExpenses
+	if err := c.BindJSON(&monthlyFixedExpense); err != nil {
+		fmt.Println("error al recibir el objeto(MonthlyFixedExpense) en el request", err)
+
 		c.JSON(404, MessageError{
 			Message: err.Error(),
-			Url:     "/monthly-expenses",
+			Url:     "/monthly-fixed-expenses",
 		})
 		return
 	}
 
-	fmt.Println("este fue el objeto enviado en el request", object)
-	if err := repository.UpdateMonthlyExpense(c, &object); err != nil {
+	fmt.Println("este fue el objeto(MonthlyFixedExpense) enviado en el request", monthlyFixedExpense)
+	if err := repository.UpdateMonthlyFixedExpense(c, &monthlyFixedExpense); err != nil {
 		c.JSON(500, MessageError{
 			Message: err.Error(),
-			Url:     "/monthly-expenses",
+			Url:     "/monthly-fixed-expenses",
 		})
 		return
 	}
