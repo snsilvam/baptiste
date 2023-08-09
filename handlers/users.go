@@ -66,6 +66,7 @@ func GetAllUsers(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 	var user models.Users
+
 	if err := c.BindJSON(&user); err != nil {
 		fmt.Println("error al recibir el objeto(UserUpdated) en el request", err)
 
@@ -77,6 +78,7 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	fmt.Println("este fue el objeto(UserUpdated) enviado en el request", user)
+
 	if err := repository.UpdateUser(c, &user); err != nil {
 		c.JSON(500, MessageError{
 			Message: err.Error(),

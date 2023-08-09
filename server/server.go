@@ -58,6 +58,7 @@ func (b *Broker) Start(binder func(s Server, r *gin.Engine)) {
 
 	repository.SetRepository(repo)
 	repository.SetUsersRepository(repo)
+	repository.SetTrackingMonthlyFixedExpensesRepository(repo)
 
 	b.router = gin.New()
 
