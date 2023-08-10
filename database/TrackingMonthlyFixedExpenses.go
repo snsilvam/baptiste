@@ -54,6 +54,7 @@ func (f *FirestoreRepository) GetAllTrackingMonthlyFixedExpenses(ctx context.Con
 	var trackingMonthlyFixedExpenses []models.TrackingMonthlyFixedExpenses
 
 	iter := collection.Documents(ctx)
+	defer iter.Stop()
 
 	for {
 		doc, err := iter.Next()

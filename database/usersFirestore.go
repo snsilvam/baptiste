@@ -54,6 +54,7 @@ func (f *FirestoreRepository) GetAllUsers(ctx context.Context) (*[]models.Users,
 	var users []models.Users
 
 	iter := collection.Documents(ctx)
+	defer iter.Stop()
 
 	for {
 		doc, err := iter.Next()
