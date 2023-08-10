@@ -14,7 +14,7 @@ type TrackingMonthlyFixedExpenses struct {
 	//Fecha de actualizacion.
 	UpdatedAt time.Time `json:"updatedAt"`
 	//Mes en el que se realiza el seguimiento.
-	Monthly time.Month `json:"monthly"`
+	Month time.Month `json:"month"`
 	//Dinero a pagar en el mes actual para el gasto fijo mensual.
 	MonthlyCost int64 `json:"monthlyCost"`
 	//Dinero a pagar en el mes actual, para cada usuario.
@@ -35,7 +35,7 @@ type TrackingMonthlyFixedExpensesInsert struct {
 	//Fecha de actualizacion.
 	UpdatedAt time.Time `json:"updatedAt"`
 	//Mes en el que se realiza el seguimiento.
-	Monthly time.Month `json:"monthly"`
+	Month time.Month `json:"month"`
 	//Dinero a pagar en el mes actual para el gasto fijo mensual.
 	MonthlyCost int64 `json:"monthlyCost"`
 	//Dinero a pagar en el mes actual, para cada usuario.

@@ -18,13 +18,13 @@ func (f *FirestoreRepository) InsertTrackingMonthlyFixedExpense(ctx context.Cont
 	object.CreatedAt = time.Now()
 	object.UpdatedAt = object.CreatedAt
 	object.Status = true
-	object.Monthly = object.CreatedAt.Month()
+	object.Month = object.CreatedAt.Month()
 	object.MonthlyCostForEachUser = object.MonthlyCost
 
 	trackingMonthlyFixedExpenseCollection := f.client.Collection("trackingMonthlyFixedExpense")
 
 	/*1. Se realiza una consulta con el objetivo de filtrar los seguimientos del mes actual.*/
-	response := trackingMonthlyFixedExpenseCollection.Where("Status", "==", true).Where("Monthly", "==", object.Monthly)
+	response := trackingMonthlyFixedExpenseCollection.Where("Status", "==", true).Where("Monthly", "==", object.Month)
 
 	/*2. Se comprueba si en los seguimientos encontrados existen relacion con el gasto fijo mensual al
 	que se le va realizar el seguimiento por medio de su IDFixedExpense*/
@@ -149,7 +149,7 @@ func (f *FirestoreRepository) UpdateTrackingMonthlyFixedExpense(ctx context.Cont
 	object.UpdatedAt = time.Now()
 
 	_, err := doc.Update(ctx, []firestore.Update{
-		{Path: "Monthly", Value: object.Monthly},
+		{Path: "Monthly", Value: object.Month},
 		{Path: "MonthlyCost", Value: object.MonthlyCost},
 		{Path: "MonthlyCostForEachUser", Value: object.MonthlyCostForEachUser},
 		{Path: "PaymentStatus", Value: object.PaymentStatus},
