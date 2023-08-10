@@ -11,19 +11,84 @@ import (
 )
 
 func (f *FirestoreRepository) InsertTrackingMonthlyFixedExpense(ctx context.Context, object *models.TrackingMonthlyFixedExpensesInsert) error {
-	trackingMonthlyFixedExpenseCollection := f.client.Collection("trackingMonthlyFixedExpense")
+	var trackingMonthlyFixedExpense models.TrackingMonthlyFixedExpenses
+	var counter int64
+	var idsMonthlyFixedExpenses []string
 
 	object.CreatedAt = time.Now()
 	object.UpdatedAt = object.CreatedAt
 	object.Status = true
+	object.Monthly = object.CreatedAt.Month()
+	object.MonthlyCostForEachUser = object.MonthlyCost
 
-	wr, err := trackingMonthlyFixedExpenseCollection.NewDoc().Create(ctx, object)
-	if err != nil {
-		fmt.Println("error al intentar crear el documento(trackingMonthlyFixedExpense) en firestore:", err)
-		return err
+	trackingMonthlyFixedExpenseCollection := f.client.Collection("trackingMonthlyFixedExpense")
+
+	/*1. Se realiza una consulta con el objetivo de filtrar los seguimientos del mes actual.*/
+	response := trackingMonthlyFixedExpenseCollection.Where("Status", "==", true).Where("Monthly", "==", object.Monthly)
+
+	/*2. Se comprueba si en los seguimientos encontrados existen relacion con el gasto fijo mensual al
+	que se le va realizar el seguimiento por medio de su IDFixedExpense*/
+	iter := response.Documents(ctx)
+	defer iter.Stop()
+
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		if err = doc.DataTo(&trackingMonthlyFixedExpense); err != nil {
+			return err
+		}
+
+		if trackingMonthlyFixedExpense.IDFixedExpense == object.IDFixedExpense {
+			idsMonthlyFixedExpenses = append(idsMonthlyFixedExpenses, doc.Ref.ID)
+			counter++
+		}
+
+		fmt.Println(doc.Data())
 	}
 
-	fmt.Println("El documento(trackingMonthlyFixedExpense) se creo con exito ☻", wr)
+	/*3. Si existen registros relacionados con el gasto fijo mensual, se divide el costo de este mes en
+	la cantidad de registros encontrados, mas el seguimiento actual.*/
+	if counter > 0 {
+		fmt.Println("IDS:------------------>", idsMonthlyFixedExpenses)
+		counter++
+		object.MonthlyCostForEachUser = object.MonthlyCostForEachUser / counter
+
+		wr, err := trackingMonthlyFixedExpenseCollection.NewDoc().Create(ctx, object)
+		if err != nil {
+			fmt.Println("error al intentar crear el documento(trackingMonthlyFixedExpense) en firestore:", err)
+			return err
+		}
+
+		fmt.Println("El documento(trackingMonthlyFixedExpense) se creo con exito ☻", wr)
+		/*4.  Se actualiza cada  seguimiento del gasto fijo mensual, con el nuevo costo de este mes
+		para cada usuario.*/
+		for _, id := range idsMonthlyFixedExpenses {
+			doc := f.client.Doc("trackingMonthlyFixedExpense/" + id)
+
+			_, err := doc.Update(ctx, []firestore.Update{
+				{Path: "MonthlyCostForEachUser", Value: object.MonthlyCostForEachUser},
+				{Path: "UpdatedAt", Value: object.UpdatedAt},
+			})
+			if err != nil {
+				return err
+			}
+		}
+
+	} else {
+		wr, err := trackingMonthlyFixedExpenseCollection.NewDoc().Create(ctx, object)
+		if err != nil {
+			fmt.Println("error al intentar crear el documento(trackingMonthlyFixedExpense) en firestore:", err)
+			return err
+		}
+
+		fmt.Println("El documento(trackingMonthlyFixedExpense) se creo con exito ☻", wr)
+	}
 
 	return nil
 }

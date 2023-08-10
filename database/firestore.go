@@ -12,7 +12,6 @@ type FirestoreRepository struct {
 
 func NewClientFirestore(ctx context.Context, projectID string) (*FirestoreRepository, error) {
 	client, err := firestore.NewClient(ctx, projectID)
-
 	if err != nil {
 		return nil, err
 	}
