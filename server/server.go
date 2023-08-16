@@ -22,7 +22,6 @@ type Server interface {
 
 type Broker struct {
 	config *Config
-
 	router *gin.Engine
 }
 
@@ -50,8 +49,8 @@ func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 
 func (b *Broker) Start(binder func(s Server, r *gin.Engine)) {
 	ctx := context.Background()
-	repo, err := database.NewClientFirestore(ctx, b.config.ProjectID)
 
+	repo, err := database.NewClientFirestore(ctx, b.config.ProjectID)
 	if err != nil {
 		log.Fatal("error creating a new client of firestore: ", err)
 	}

@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,8 +26,8 @@ func HomeHandler(c *gin.Context) {
 }
 
 func HelloHandler(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, HomeResponse{
-		Message: "Hello Word",
-		Status:  true,
-	})
+	session := sessions.Default(c)
+	profile := session.Get("profile")
+	fmt.Println("Profile---->", profile)
+	c.IndentedJSON(http.StatusOK, profile)
 }

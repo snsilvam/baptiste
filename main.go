@@ -2,19 +2,23 @@ package main
 
 import (
 	"context"
+	"encoding/gob"
+	"fmt"
 	"log"
 	"os"
 
+	"baptiste.com/authenticator"
 	"baptiste.com/handlers"
 	"baptiste.com/server"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	err := godotenv.Load(".env")
-
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -26,7 +30,6 @@ func main() {
 		Port:      PORT,
 		ProjectID: PROJECT_ID,
 	})
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,6 +38,19 @@ func main() {
 }
 
 func BindRoutesHome(s server.Server, r *gin.Engine) {
+	fmt.Println("HOLAAAAA BIND ROUTES")
+	// To store custom types in our cookies,
+	// we must first register them using gob.Register
+	gob.Register(map[string]interface{}{})
+
+	store := cookie.NewStore([]byte("secret"))
+	r.Use(sessions.Sessions("auth-session", store))
+
+	auth, err := authenticator.New()
+	if err != nil {
+		log.Fatalf("Failed to initialize the authenticator: %v", err)
+	}
+
 	r.GET("/", handlers.HomeHandler)
 	r.GET("/hello", handlers.HelloHandler)
 
@@ -55,4 +71,9 @@ func BindRoutesHome(s server.Server, r *gin.Engine) {
 	r.GET("/tracking-monthly-fixed-expenses/:id", handlers.GetTrackingMonthlyFixedExpense)
 	r.GET("/tracking-monthly-fixed-expenses", handlers.GetTrackingMonthlyFixedExpenses)
 	r.PATCH("/tracking-monthly-fixed-expenses", handlers.UpdateTrackingMonthlyFixedExpense)
+
+	//Login and Auth0
+	r.GET("/login", handlers.HandlerLogin(auth))
+	r.GET("/callback", handlers.HandlerCallback(auth))
+	r.GET("/logout", handlers.HandlerLogOut)
 }
