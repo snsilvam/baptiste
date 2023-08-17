@@ -14,6 +14,8 @@ import (
 type Config struct {
 	Port      string
 	ProjectID string
+	Audience  string
+	Domain    string
 }
 
 type Server interface {

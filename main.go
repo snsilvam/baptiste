@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"baptiste.com/handlers"
+	"baptiste.com/middleware"
 	"baptiste.com/server"
 
 	"github.com/gin-gonic/gin"
@@ -21,10 +22,14 @@ func main() {
 
 	PORT := os.Getenv("PORT")
 	PROJECT_ID := os.Getenv("PROJECT_ID")
+	AUTH0_AUDIENCE := os.Getenv("AUTH0_AUDIENCE")
+	AUTH0_DOMAIN := os.Getenv("AUTH0_DOMAIN")
 
 	s, err := server.NewServer(context.Background(), &server.Config{
 		Port:      PORT,
 		ProjectID: PROJECT_ID,
+		Domain:    AUTH0_DOMAIN,
+		Audience:  AUTH0_AUDIENCE,
 	})
 
 	if err != nil {
@@ -55,4 +60,11 @@ func BindRoutesHome(s server.Server, r *gin.Engine) {
 	r.GET("/tracking-monthly-fixed-expenses/:id", handlers.GetTrackingMonthlyFixedExpense)
 	r.GET("/tracking-monthly-fixed-expenses", handlers.GetTrackingMonthlyFixedExpenses)
 	r.PATCH("/tracking-monthly-fixed-expenses", handlers.UpdateTrackingMonthlyFixedExpense)
+
+	//rutas de prueba para la seguridad.
+	r.GET("/api/messages/public", handlers.HomeHandler)
+	r.GET("/api/messages/protected", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain), handlers.HomeHandler)
+	r.GET("/api/messages/admin", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain), middleware.ValidatePermissions([]string{"read:admin-messages"}), handlers.HomeHandler)
+
+	r.NoRoute(handlers.NotFoundHandler)
 }
