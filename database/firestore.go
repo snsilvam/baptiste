@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"cloud.google.com/go/firestore"
+	"google.golang.org/api/option"
 )
 
 type FirestoreRepository struct {
@@ -11,7 +12,8 @@ type FirestoreRepository struct {
 }
 
 func NewClientFirestore(ctx context.Context, projectID string) (*FirestoreRepository, error) {
-	client, err := firestore.NewClient(ctx, projectID)
+	credentialsPath := "./baptiste-389101-3f5834d15587.json"
+	client, err := firestore.NewClient(ctx, projectID, option.WithCredentialsFile(credentialsPath))
 	if err != nil {
 		return nil, err
 	}
