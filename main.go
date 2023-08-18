@@ -45,28 +45,35 @@ func BindRoutesHome(s server.Server, r *gin.Engine) {
 	r.GET("/", handlers.HomeHandler)
 	r.GET("/hello", handlers.HelloHandler)
 
-	//Rutas de MonthlyFixedExpenses
-	r.POST("/monthly-fixed-expenses", handlers.PostMonthlyFixedExpense)
-	r.GET("/monthly-fixed-expenses/:id", handlers.GetMonthlyFixedExpense)
-	r.GET("/monthly-fixed-expenses", handlers.GetAllMonthlyFixedExpenses)
-	r.PATCH("/monthly-fixed-expenses", handlers.UpdateMonthlyFixedExpense)
+	//Routes of MonthlyFixedExpenses.
+	r.POST("/monthly-fixed-expenses", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"create:monthlyFixed"}), handlers.PostMonthlyFixedExpense)
+	r.GET("/monthly-fixed-expenses/:id", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"read:monthlyFixed"}), handlers.GetMonthlyFixedExpense)
+	r.GET("/monthly-fixed-expenses", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"read:monthlyFixeds"}), handlers.GetAllMonthlyFixedExpenses)
+	r.PATCH("/monthly-fixed-expenses", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"updated:monthlyFixed"}), handlers.UpdateMonthlyFixedExpense)
 
-	//Rutas de Users
-	r.POST("/users", handlers.PostUserHandler)
-	r.GET("/users/:id", handlers.GetUser)
-	r.GET("/users", handlers.GetAllUsers)
-	r.PATCH("/users", handlers.UpdateUser)
+	//Routes of Users.
+	r.POST("/users", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"create:user"}), handlers.PostUserHandler)
+	r.GET("/users/:id", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"read:user"}), handlers.GetUser)
+	r.GET("/users", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"read:users"}), handlers.GetAllUsers)
+	r.PATCH("/users", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"updated:user"}), handlers.UpdateUser)
 
-	//Rutas de TrackingMonthlyFixedExpensesInsert
-	r.POST("/tracking-monthly-fixed-expenses", handlers.PostTrackingMonthlyFixedExpense)
-	r.GET("/tracking-monthly-fixed-expenses/:id", handlers.GetTrackingMonthlyFixedExpense)
-	r.GET("/tracking-monthly-fixed-expenses", handlers.GetTrackingMonthlyFixedExpenses)
-	r.PATCH("/tracking-monthly-fixed-expenses", handlers.UpdateTrackingMonthlyFixedExpense)
-
-	//rutas de prueba para la seguridad.
-	r.GET("/api/messages/public", handlers.HomeHandler)
-	r.GET("/api/messages/protected", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain), handlers.HomeHandler)
-	r.GET("/api/messages/admin", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain), middleware.ValidatePermissions([]string{"read:admin-messages"}), handlers.HomeHandler)
+	//Routes of TrackingMonthlyFixedExpensesInsert.
+	r.POST("/tracking-monthly-fixed-expenses", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"create:trackingMonthly"}), handlers.PostTrackingMonthlyFixedExpense)
+	r.GET("/tracking-monthly-fixed-expenses/:id", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"read:trackingMonthly"}), handlers.GetTrackingMonthlyFixedExpense)
+	r.GET("/tracking-monthly-fixed-expenses", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"read:trackingMonthlyFixeds"}), handlers.GetTrackingMonthlyFixedExpenses)
+	r.PATCH("/tracking-monthly-fixed-expenses", middleware.ValidateJWT(s.Config().Audience, s.Config().Domain),
+		middleware.ValidatePermissions([]string{"updated:trackingMonthly"}), handlers.UpdateTrackingMonthlyFixedExpense)
 
 	r.NoRoute(handlers.NotFoundHandler)
 }
