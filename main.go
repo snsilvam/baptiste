@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"baptiste.com/config"
 	"baptiste.com/handlers"
 	"baptiste.com/middleware"
 	"baptiste.com/server"
@@ -15,7 +16,6 @@ import (
 
 func main() {
 	err := godotenv.Load(".env")
-
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -24,14 +24,16 @@ func main() {
 	PROJECT_ID := os.Getenv("PROJECT_ID")
 	AUTH0_AUDIENCE := os.Getenv("AUTH0_AUDIENCE")
 	AUTH0_DOMAIN := os.Getenv("AUTH0_DOMAIN")
+	CLIENT_ORIGIN_URL := os.Getenv("CLIENT_ORIGIN_URL")
 
 	s, err := server.NewServer(context.Background(), &server.Config{
-		Port:      PORT,
-		ProjectID: PROJECT_ID,
-		Domain:    AUTH0_DOMAIN,
-		Audience:  AUTH0_AUDIENCE,
+		Port:          PORT,
+		ProjectID:     PROJECT_ID,
+		Domain:        AUTH0_DOMAIN,
+		Audience:      AUTH0_AUDIENCE,
+		SecureOptions: config.SecureOptions(),
+		CorsOptions:   config.CorsOptions(CLIENT_ORIGIN_URL),
 	})
-
 	if err != nil {
 		log.Fatal(err)
 	}

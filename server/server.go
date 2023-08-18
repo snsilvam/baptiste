@@ -9,13 +9,17 @@ import (
 	"baptiste.com/database"
 	"baptiste.com/repository"
 	"github.com/gin-gonic/gin"
+	"github.com/rs/cors"
+	"github.com/unrolled/secure"
 )
 
 type Config struct {
-	Port      string
-	ProjectID string
-	Audience  string
-	Domain    string
+	Port          string
+	ProjectID     string
+	SecureOptions secure.Options
+	CorsOptions   cors.Options
+	Audience      string
+	Domain        string
 }
 
 type Server interface {
@@ -66,9 +70,19 @@ func (b *Broker) Start(binder func(s Server, r *gin.Engine)) {
 
 	binder(b, b.router)
 
-	log.Println("Starting server on port", b.Config().Port)
+	corsMiddleware := cors.New(b.config.CorsOptions)
+	routerWithCors := corsMiddleware.Handler(b.router)
 
+	secureMiddleware := secure.New(b.config.SecureOptions)
+	finalHandler := secureMiddleware.Handler(routerWithCors)
+	server := &http.Server{
+		Addr:    b.config.Port,
+		Handler: finalHandler,
+	}
+
+	log.Println("Starting server on port", server.Addr)
 	if err := http.ListenAndServe(b.config.Port, b.router); err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+
 }

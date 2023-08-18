@@ -75,7 +75,7 @@ func ValidateJWT(audience, domain string) gin.HandlerFunc {
 
 	jwtValidator, err := validator.New(
 		provider.KeyFunc,
-		validator.HS256,
+		validator.RS256,
 		issuerURL.String(),
 		[]string{audience},
 		validator.WithCustomClaims(
