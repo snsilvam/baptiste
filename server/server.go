@@ -6,8 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	"baptiste.com/database"
-	"baptiste.com/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/cors"
 	"github.com/unrolled/secure"
@@ -15,7 +13,6 @@ import (
 
 type Config struct {
 	Port          string
-	ProjectID     string
 	SecureOptions secure.Options
 	CorsOptions   cors.Options
 	Audience      string
@@ -41,10 +38,6 @@ func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 		return nil, errors.New("port is required")
 	}
 
-	if config.ProjectID == "" {
-		return nil, errors.New("projectID of  database is required")
-	}
-
 	broker := &Broker{
 		config: config,
 		//create a new routeador
@@ -55,29 +48,12 @@ func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 }
 
 func (b *Broker) Start(binder func(s Server, r *gin.Engine)) {
-	ctx := context.Background()
-	repo, err := database.NewClientFirestore(ctx, b.config.ProjectID)
-
-	if err != nil {
-		log.Fatal("error creating a new client of firestore: ", err)
-	}
-
-	repository.SetRepository(repo)
-	repository.SetUsersRepository(repo)
-	repository.SetTrackingMonthlyFixedExpensesRepository(repo)
-
 	b.router = gin.New()
 
 	binder(b, b.router)
 
-	corsMiddleware := cors.New(b.config.CorsOptions)
-	routerWithCors := corsMiddleware.Handler(b.router)
-
-	secureMiddleware := secure.New(b.config.SecureOptions)
-	finalHandler := secureMiddleware.Handler(routerWithCors)
 	server := &http.Server{
-		Addr:    b.config.Port,
-		Handler: finalHandler,
+		Addr: b.config.Port,
 	}
 
 	log.Println("Starting server on port", server.Addr)
