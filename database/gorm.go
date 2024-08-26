@@ -2,6 +2,7 @@ package database
 
 import (
 	"log"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -17,5 +18,10 @@ func Start(dsn string) {
 }
 
 type Gastos struct {
-	ID uint `gorm:"primaryKey"`
+	ID            uint `gorm:"primaryKey"`
+	Nombre        string
+	CostoDelGasto int
+	FechaDelGasto time.Time
+	Categoria     string
+	Lugar         string
 }
