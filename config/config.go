@@ -10,11 +10,11 @@ import (
 
 type Server struct {
 	Port     string
-	Database *database.DatabasePostgres
+	Database *database.Database
 	Router   *gin.Engine
 }
 
-func ConstructorServer(port string, dns string) (*Server, error) {
+func ConstructorServer(port string, dns string, dbConstructor func(string) (*database.Database, error)) (*Server, error) {
 	if port == "" {
 		return nil, errors.New("el servidor necesita un puerto para inicializar la applicacion")
 	}
@@ -23,7 +23,7 @@ func ConstructorServer(port string, dns string) (*Server, error) {
 	}
 
 	router := gin.Default()
-	database, err := database.ConstructorDatabasePostgres(dns)
+	database, err := database.ConstructorDatabase(dns)
 	if err != nil {
 		return nil, err
 	}

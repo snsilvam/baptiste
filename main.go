@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"baptiste.com/config"
+	"baptiste.com/database"
 	"baptiste.com/src/gasto"
 	"github.com/joho/godotenv"
 )
@@ -17,7 +18,7 @@ func main() {
 
 	PORT := os.Getenv("PORT")
 	DNS := os.Getenv("DNS")
-	server, err := config.ConstructorServer(PORT, DNS)
+	server, err := config.ConstructorServer(PORT, DNS, database.ConstructorDatabase)
 	if err != nil {
 		log.Fatal("error inicializando el servidor ", err)
 	}

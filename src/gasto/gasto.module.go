@@ -1,7 +1,7 @@
 package gasto
 
 import (
-	postgres "baptiste.com/database"
+	database "baptiste.com/database"
 	"github.com/gin-gonic/gin"
 )
 
@@ -9,7 +9,7 @@ type GastoModule struct {
 	Controller *GastoController
 }
 
-func ConstructorGastoModule(database postgres.DatabasePostgres) *GastoModule {
+func ConstructorGastoModule(database database.Database) *GastoModule {
 	service := ConstructorGastoService(database)
 
 	gasto := &GastoModule{

@@ -9,11 +9,11 @@ import (
 	gastos "baptiste.com/src/gasto/models"
 )
 
-type DatabasePostgres struct {
+type Database struct {
 	Db *gorm.DB
 }
 
-func ConstructorDatabasePostgres(dsn string) (*DatabasePostgres, error) {
+func ConstructorDatabase(dsn string) (*Database, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error conectando a la base de datos: ", err)
@@ -26,7 +26,7 @@ func ConstructorDatabasePostgres(dsn string) (*DatabasePostgres, error) {
 		return nil, err
 	}
 
-	return &DatabasePostgres{
+	return &Database{
 		Db: db,
 	}, nil
 }

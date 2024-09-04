@@ -4,16 +4,15 @@ import (
 	"context"
 	"log"
 
-	postgres "baptiste.com/database"
+	database "baptiste.com/database"
 	gastos "baptiste.com/src/gasto/models"
 )
 
-// Cocina el corral.
 type GastoService struct {
-	database postgres.DatabasePostgres
+	database database.Database
 }
 
-func ConstructorGastoService(database postgres.DatabasePostgres) *GastoService {
+func ConstructorGastoService(database database.Database) *GastoService {
 	return &GastoService{
 		database: database,
 	}
