@@ -12,7 +12,7 @@ func TestConstructorServer_Exitosa(t *testing.T) {
 	//    a. Definimos el puerto en el que se espera que el servidor escuche.
 	//    b. Definimos un DNS simulado que se utilizará para la conexión a la base de datos.
 	port := ":8080"
-	dns := "host=localhost user=postgres password=7752930ni dbname=Baptiste port=5432 sslmode=disable search_path=baptiste"
+	dns := "host=localhost user=test password=test dbname=test port=5432 sslmode=disable search_path=baptiste"
 
 	// 2. Mock de la base de datos:
 	//    a. Creamos un mock de la base de datos que simula un objeto de base de datos real.
