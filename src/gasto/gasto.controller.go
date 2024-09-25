@@ -46,9 +46,15 @@ func (gc *GastoController) CreateGasto(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, "Gastos almacenados en la base de datos.")
 }
 
-func (gc *GastoController) Hello(c *gin.Context) {
-	fmt.Println("controller hello")
-	saludo := gc.service.Hello(c)
+func (gc *GastoController) GetAllGastos(c *gin.Context) {
+	gastos, err := gc.service.GetAllGastos(c)
+	if err != nil {
+		c.JSON(500, handlers.MessageError{
+			Message: err.Error(),
+			Url:     "error consultando la tabla gastos.",
+		})
+		return
+	}
 
-	c.IndentedJSON(http.StatusOK, saludo)
+	c.JSON(http.StatusOK, gastos)
 }

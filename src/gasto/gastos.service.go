@@ -28,6 +28,14 @@ func (gs *GastoService) CreateGasto(ctx context.Context, gasto *gastos.Gastos) e
 	return nil
 }
 
-func (gs *GastoService) Hello(ctx context.Context) string {
-	return "Hola mi primer endpoint"
+func (gs *GastoService) GetAllGastos(ctx context.Context) ([]*gastos.Gastos, error) {
+	var allGastos []*gastos.Gastos
+
+	result := gs.database.Db.Find(&allGastos)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return allGastos, nil
 }

@@ -22,6 +22,6 @@ func (gm *GastoModule) RegisterGastoRoutes(router *gin.Engine) {
 	gastoRoutes := router.Group("/gastos")
 	{
 		gastoRoutes.POST("", gm.Controller.CreateGasto)
-		gastoRoutes.GET("", gm.Controller.Hello)
+		gastoRoutes.GET("", gm.Controller.GetAllGastos)
 	}
 }
