@@ -63,6 +63,21 @@ func (gs *GastoService) GetAllGastos(ctx context.Context) ([]*gastos.Gastos, err
 	return allGastos, nil
 }
 
+func (gs *GastoService) GetGastoByID(ctx context.Context, id int) (*gastos.Gastos, error) {
+	var gasto gastos.Gastos
+
+	result := gs.database.Db.First(&gasto, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	// Formato de fecha amigable
+	const layout = "02-01-2006" // Formato: dd-mm-yyyy
+	gasto.FechaFormateada = gasto.FechaDelGasto.Format(layout)
+
+	return &gasto, nil
+}
+
 func (gs *GastoService) UpdateGasto(ctx context.Context, gasto *gastos.Gastos) error {
 	if gasto.ID == 0 {
 		return errors.New("id required")

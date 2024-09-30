@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"baptiste.com/handlers"
@@ -47,6 +48,30 @@ func (gc *GastoController) CreateGasto(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, "Gastos almacenados en la base de datos.")
+}
+
+func (gc *GastoController) GetGastoByID(c *gin.Context) {
+	idGastoStr := c.Param("id")
+
+	idGasto, err := strconv.Atoi(idGastoStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, handlers.MessageError{
+			Message: "ID inválido, debe ser un número.",
+			Url:     "/id",
+		})
+		return
+	}
+
+	gasto, err := gc.service.GetGastoByID(c, idGasto)
+	if err != nil {
+		c.JSON(500, handlers.MessageError{
+			Message: "error consultando el gasto: " + err.Error(),
+			Url:     "/id",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gasto)
 }
 
 func (gc *GastoController) GetAllGastos(c *gin.Context) {
