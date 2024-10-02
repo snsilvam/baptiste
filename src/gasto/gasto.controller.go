@@ -110,3 +110,26 @@ func (gc *GastoController) UpdateGasto(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, "Gastos actualizados en la base de datos.")
 }
+
+func (gc *GastoController) DeleteGasto(c *gin.Context) {
+	idGastoStr := c.Param("id")
+	idGasto, err := strconv.Atoi(idGastoStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, handlers.MessageError{
+			Message: "ID inválido, debe ser un número.",
+			Url:     "/id",
+		})
+		return
+	}
+
+	err = gc.service.DeleteGasto(c, idGasto)
+	if err != nil {
+		c.JSON(500, handlers.MessageError{
+			Message: "error eliminando el gasto: " + err.Error(),
+			Url:     "/id",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, "Gasto eliminado")
+}

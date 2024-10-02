@@ -25,5 +25,6 @@ func (gm *GastoModule) RegisterGastoRoutes(router *gin.Engine) {
 		gastoRoutes.GET("", gm.Controller.GetAllGastos)
 		gastoRoutes.GET("/:id", gm.Controller.GetGastoByID)
 		gastoRoutes.PUT("", gm.Controller.UpdateGasto)
+		gastoRoutes.DELETE("delete/:id", gm.Controller.DeleteGasto)
 	}
 }

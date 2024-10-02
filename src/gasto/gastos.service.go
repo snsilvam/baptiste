@@ -89,3 +89,19 @@ func (gs *GastoService) UpdateGasto(ctx context.Context, gasto *gastos.Gastos) e
 
 	return nil
 }
+
+func (gs *GastoService) DeleteGasto(ctx context.Context, id int) error {
+	var gasto gastos.Gastos
+
+	result := gs.database.Db.First(&gasto, 1)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	gs.database.Db.Delete(&gasto)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
