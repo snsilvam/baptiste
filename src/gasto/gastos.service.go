@@ -93,7 +93,7 @@ func (gs *GastoService) UpdateGasto(ctx context.Context, gasto *gastos.Gastos) e
 func (gs *GastoService) DeleteGasto(ctx context.Context, id int) error {
 	var gasto gastos.Gastos
 
-	result := gs.database.Db.First(&gasto, 1)
+	result := gs.database.Db.First(&gasto, id)
 	if result.Error != nil {
 		return result.Error
 	}
